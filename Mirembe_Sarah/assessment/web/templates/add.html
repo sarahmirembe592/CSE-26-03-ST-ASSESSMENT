@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add A Video</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Upload Video Course</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #e8192c;
+      --red-dark: #b5121f;
+      --red-light: #ffeaec;
+      --dark: #111318;
+      --mid: #2a2d35;
+      --surface: #1a1d24;
+      --border: #2f3340;
+      --text: #e8eaf0;
+      --muted: #8b90a0;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius: 12px;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background-image:
+        radial-gradient(ellipse 60% 50% at 70% 20%, rgba(232,25,44,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(232,25,44,0.05) 0%, transparent 60%);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 860px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: slideUp 0.5s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, var(--mid) 0%, #1e2130 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-icon {
+      width: 44px; height: 44px;
+      background: var(--red);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-icon svg { width: 22px; height: 22px; fill: #fff; }
+
+    .card-header h1 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .card-header p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card-body {
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .card-body { grid-template-columns: 1fr; padding: 1.5rem; }
+      .card-header { padding: 1.5rem; }
+    }
+
+    /* LEFT COLUMN */
+    .left-col { display: flex; flex-direction: column; gap: 1.4rem; }
+
+    .field { display: flex; flex-direction: column; gap: 0.45rem; }
+
+    .field label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .field label .req { color: var(--red); margin-left: 2px; }
+
+    .field input,
+    .field textarea,
+    .field select {
+      background: var(--mid);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      appearance: none;
+    }
+
+    .field textarea { resize: vertical; min-height: 100px; }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: #4a4f60; }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(232,25,44,0.15);
+    }
+
+    /* Validation states */
+    .field input.valid,
+    .field textarea.valid,
+    .field select.valid {
+      border-color: var(--success);
+    }
+
+    .field input.invalid,
+    .field textarea.invalid,
+    .field select.invalid {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(232,25,44,0.12);
+    }
+
+    .error-msg {
+      font-size: 0.73rem;
+      color: var(--red);
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .error-msg.show { display: flex; }
+
+    .error-msg::before {
+      content: '⚠';
+      font-size: 0.7rem;
+    }
+
+    /* Select wrapper */
+    .select-wrap { position: relative; }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-top-color: var(--muted);
+      pointer-events: none;
+    }
+
+    /* Date input calendar icon color */
+    .field input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.6);
+      cursor: pointer;
+    }
+
+    /* Character counter */
+    .char-count {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: right;
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* RIGHT COLUMN */
+    .right-col { display: flex; flex-direction: column; gap: 1.4rem; }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      background: var(--mid);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 2rem 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 140px;
+    }
+
+    .upload-zone:hover, .upload-zone.drag-over {
+      border-color: var(--red);
+      background: rgba(232,25,44,0.06);
+    }
+
+    .upload-zone.has-file {
+      border-color: var(--success);
+      background: rgba(34,197,94,0.06);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+      width: 100%; height: 100%;
+    }
+
+    .upload-icon {
+      width: 40px; height: 40px;
+      background: rgba(232,25,44,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .upload-icon svg { width: 20px; height: 20px; }
+
+    .upload-zone .upload-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .upload-zone .upload-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .upload-zone .file-name {
+      font-size: 0.75rem;
+      color: var(--success);
+      font-family: 'DM Mono', monospace;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .zone-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .zone-label .req { color: var(--red); margin-left: 2px; }
+
+    /* Progress bar */
+    .progress-wrap {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-wrap.show { display: block; }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), #ff6b7a);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Submit */
+    .card-footer {
+      padding: 0 2.5rem 2.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .card-footer { padding: 0 1.5rem 1.5rem; }
+    }
+
+    .btn-upload {
+      width: 100%;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-upload:hover { background: var(--red-dark); box-shadow: 0 4px 20px rgba(232,25,44,0.35); }
+    .btn-upload:active { transform: scale(0.98); }
+    .btn-upload:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    .btn-upload svg { width: 18px; height: 18px; fill: #fff; }
+
+    /* Success toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      background: #16a34a;
+      color: #fff;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      animation: fadeIn 0.3s ease;
+      z-index: 9999;
+    }
+
+    .toast.show { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Required legend */
+    .required-note {
+      font-size: 0.72rem;
+      color: var(--muted);
+      padding: 0 2.5rem 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .required-note { padding: 0 1.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Header -->
+  <div class="card-header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <div>
+      <h1>Upload Video Course</h1>
+      <p>Share your knowledge with learners worldwide</p>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form id="uploadForm" novalidate>
+    <div class="card-body">
+
+      <!-- LEFT: Text fields -->
+      <div class="left-col">
+
+        <div class="field">
+          <input type="text" id="title" name="title" placeholder='Video Title'/>
+          <div class="char-count"><span id="titleCount">0</span>/120</div>
+          <span class="error-msg" id="titleErr">Required field.</span>
+        </div>
+
+        <div class="field">
+          <textarea id="description" name="description" placeholder="Description(Optional)" maxlength="500"></textarea>
+          <div class="char-count"><span id="descCount">0</span>/500</div>
+        </div>
+
+        <div class="field">
+          <div class="select-wrap" aria-placeholder="Video quality">
+            <select id="quality" name="quality">
+                <option value="" disabled selected hidden>Video quality <span class="req"></span></option>
+                <option value="360p">360p</option>
+              <option value="480p">480p (SD)</option>
+              <option value="720p">720p (HD)</option>
+              <option value="1080p">1080p (Full HD)</option>
+              <option value="1440p">1440p (2K)</option>
+              <option value="4K">4K (Ultra HD)</option>
+            </select>
+          </div>
+          <span class="error-msg" id="qualityErr">Required field.</span>
+        </div>
+
+        <div class="field">
+          <label for="publishDate">Date  <span class="req">*</span></label>
+          <input type="date" id="publishDate" name="publishDate"/>
+          <span class="error-msg" id="dateErr">Required field.</span>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Upload zones -->
+      <div class="right-col">
+
+        <div>
+          <br/>
+          <div class="upload-zone" id="videoZone">
+            <input type="file" id="videoFile" name="videoFile" accept="video/*" />
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#e8192c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+              </svg>
+            </div>
+            <div class="upload-label" id="videoLabel">Upload Video</div>
+            <div class="file-name" id="videoFileName"></div>
+          </div>
+          <div class="progress-wrap" id="videoProgress">
+            <div class="progress-bar" id="videoBar"></div>
+          </div>
+          <span class="error-msg" id="videoErr" style="margin-top:4px">Please upload a video file.</span>
+        </div>
+
+        <div>
+          <div class="zone-label"></div>
+          <br/>
+          <div class="upload-zone" id="thumbZone">
+            <input type="file" id="thumbFile" name="thumbFile" accept="image/*"/>
+            <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#e8192c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/>
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+              </svg>
+            </div>
+            <div class="upload-label" id="thumbLabel">Upload Thumbnail</div>
+            <div class="upload-sub"></div>
+            <div class="file-name" id="thumbFileName"></div>
+          </div>
+          <span class="error-msg" id="thumbErr" style="margin-top:4px">Please upload a thumbnail image.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button type="submit" class="btn-upload" id="submitBtn"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        UPLOAD
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+ Video added  successfully!
+</div>
+
+<script>
+  /* Helpers */
+  const $ = id => document.getElementById(id);
+
+  function setValid(input, errorId) {
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    $(errorId).classList.remove('show');
+  }
+
+  function setInvalid(input, errorId) {
+    input.classList.remove('valid');
+    input.classList.add('invalid');
+    $(errorId).classList.add('show');
+  }
+
+  function clearState(input, errorId) {
+    input.classList.remove('valid', 'invalid');
+    $(errorId).classList.remove('show');
+  }
+
+  /* ── Character counters ── */
+  $('title').addEventListener('input', function() {
+    $('titleCount').textContent = this.value.length;
+    if (this.value.trim().length >= 10) setValid(this, 'titleErr');
+    else if (this.value.length > 0) setInvalid(this, 'titleErr');
+    else clearState(this, 'titleErr');
+  });
+
+  $('description').addEventListener('input', function() {
+    $('descCount').textContent = this.value.length;
+  });
+
+  /* ── Select validation ── */
+  $('quality').addEventListener('change', function() {
+    if (this.value) setValid(this, 'qualityErr');
+    else setInvalid(this, 'qualityErr');
+  });
+
+  /* ── Date validation ── */
+  $('publishDate').addEventListener('change', function() {
+    if (this.value) setValid(this, 'dateErr');
+    else setInvalid(this, 'dateErr');
+  });
+
+  /* ── Upload zones ── */
+  function setupFileZone(zoneId, inputId, labelId, fileNameId, errId, type) {
+    const zone   = $(zoneId);
+    const input  = $(inputId);
+    const label  = $(labelId);
+    const fname  = $(fileNameId);
+
+    input.addEventListener('change', function() {
+      const file = this.files[0];
+      if (!file) return;
+
+      const maxBytes = type === 'video' ? 2 * 1024 * 1024 * 1024 : 5 * 1024 * 1024;
+      if (file.size > maxBytes) {
+        alert(`File too large. Maximum size is ${type === 'video' ? '2GB' : '5MB'}.`);
+        this.value = '';
+        return;
+      }
+
+      zone.classList.add('has-file');
+      label.textContent = 'File selected ✓';
+      fname.textContent = file.name;
+      $(errId).classList.remove('show');
+
+      if (type === 'video') simulateProgress();
+    });
+
+    /* Drag & drop */
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault();
+      zone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+  }
+
+  setupFileZone('videoZone', 'videoFile', 'videoLabel', 'videoFileName', 'videoErr', 'video');
+  setupFileZone('thumbZone', 'thumbFile', 'thumbLabel', 'thumbFileName', 'thumbErr', 'image');
+
+  function simulateProgress() {
+    const wrap = $('videoProgress');
+    const bar  = $('videoBar');
+    wrap.classList.add('show');
+    let w = 0;
+    const iv = setInterval(() => {
+      w += Math.random() * 18;
+      if (w >= 100) { w = 100; clearInterval(iv); }
+      bar.style.width = w + '%';
+    }, 120);
+  }
+
+  /* ── Form submission & validation ── */
+  $('uploadForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    let valid = true;
+
+    /* Title */
+    const title = $('title');
+    if (title.value.trim().length < 10) {
+      setInvalid(title, 'titleErr');
+      valid = false;
+    } else {
+      setValid(title, 'titleErr');
+    }
+
+    /* Quality */
+    const quality = $('quality');
+    if (!quality.value) {
+      setInvalid(quality, 'qualityErr');
+      valid = false;
+    } else {
+      setValid(quality, 'qualityErr');
+    }
+
+    /* Date */
+    const date = $('publishDate');
+    if (!date.value) {
+      setInvalid(date, 'dateErr');
+      valid = false;
+    } else {
+      setValid(date, 'dateErr');
+    }
+
+    /* Video file */
+    const videoFile = $('videoFile');
+    if (!videoFile.files.length) {
+      $('videoErr').classList.add('show');
+      $('videoZone').style.borderColor = 'var(--red)';
+      valid = false;
+    } else {
+      $('videoErr').classList.remove('show');
+      $('videoZone').style.borderColor = '';
+    }
+
+    /* Thumbnail file */
+    const thumbFile = $('thumbFile');
+    if (!thumbFile.files.length) {
+      $('thumbErr').classList.add('show');
+      $('thumbZone').style.borderColor = 'var(--red)';
+      valid = false;
+    } else {
+      $('thumbErr').classList.remove('show');
+      $('thumbZone').style.borderColor = '';
+    }
+
+    if (!valid) return;
+
+    /* Simulate upload */
+    const btn = $('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> Uploading…`;
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="#fff"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> UPLOAD COURSE`;
+
+      const toast = $('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+
+      /* Reset form */
+      this.reset();
+      ['title','description','quality','publishDate'].forEach(id => {
+        const el = $(id);
+        el.classList.remove('valid','invalid');
+      });
+      ['videoZone','thumbZone'].forEach(id => {
+        $(id).classList.remove('has-file');
+        $(id).style.borderColor = '';
+      });
+      $('videoLabel').textContent = 'Click or drag video here';
+      $('thumbLabel').textContent = 'Click or drag image here';
+      $('videoFileName').textContent = '';
+      $('thumbFileName').textContent = '';
+      $('titleCount').textContent = '0';
+      $('descCount').textContent = '0';
+      $('videoProgress').classList.remove('show');
+      $('videoBar').style.width = '0%';
+    }, 2200);
+  });
+</script>
+
+<style>
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</body>
+</html>
+</body>
+</html>
